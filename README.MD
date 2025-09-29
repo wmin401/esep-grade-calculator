@@ -15,6 +15,8 @@ Run unit tests with code coverage:
 ```
 cd grade_calculator/
 go test -coverprofile=coverage.txt ./...
+go tool cover -func=coverage.txt
+go tool cover -html=coverage.txt
 ```
 
 ## Part 1: Requirements Clarification
@@ -27,3 +29,32 @@ go test -coverprofile=coverage.txt ./...
 
 3. **Weight consistency:**  
    If the provided weights do not sum exactly to 100% due to data or configuration errors, should they be normalized to sum to 100%, or should the calculator return an error? Additionally, can weights vary for each class, or should the defaults (Assignments 50%, Exams 35%, Essays 15%) always be enforced?
+
+## Part 2: Understanding a New Project
+
+### Tech stack
+- Language: Go (Golang) 1.24+
+- Dependency management: Go modules
+- Testing: Built-in `testing` package (`go test`)
+- Coverage: Go coverage tools (`go test -coverprofile`, `go tool cover`)
+
+### Project files
+- `README.md` – overview and instructions
+- `go.mod` – module name and Go version
+- `grade_calculator.go` – core grade calculator logic (add grades, compute averages, weighted score, convert to letter grade)
+- `grade_calculator_test.go` – unit tests validating weighted averages and letter-grade mapping
+
+### Tests
+- **What they do:** Verify that weighted averages are applied correctly (Assignments 50%, Exams 35%, Essays 15%) and that numeric scores map to the correct letter grades (A, B, C, D, F).  
+- **How to run them:**
+  ```bash
+  cd grade_calculator
+  go test ./... -v
+  ```
+
+### Resources used
+- [Official Go documentation - testing](https://pkg.go.dev/testing)
+- [Official Go documentation - coverage tools](https://go.dev/blog/cover)
+- Assignment handout
+- Slack **#assignments** channel (for setup clarifications; check for answered questions first)
+
