@@ -133,3 +133,55 @@ func TestComputeAverageNonEmpty(t *testing.T) {
 		t.Fatalf("computeAverage(non-empty)=%d; want 90", got)
 	}
 }
+
+// add function to test pass/fail above C
+func TestPassFail_PassAtCAndAbove(t *testing.T) {
+	gc := NewGradeCalculator()
+
+	// C (70) -> Pass
+	gc.AddGrade("assign", 70, Assignment)
+	gc.AddGrade("exam", 70, Exam)
+	gc.AddGrade("essay", 70, Essay)
+	if got := gc.GetPassFail(); got != "Pass" {
+		t.Fatalf("GetPassFail()=%s; want Pass (C threshold)", got)
+	}
+
+	// B (80) -> Pass
+	gc = NewGradeCalculator()
+	gc.AddGrade("assign", 80, Assignment)
+	gc.AddGrade("exam", 80, Exam)
+	gc.AddGrade("essay", 80, Essay)
+	if got := gc.GetPassFail(); got != "Pass" {
+		t.Fatalf("GetPassFail()=%s; want Pass (B)", got)
+	}
+
+	// A (90) -> Pass
+	gc = NewGradeCalculator()
+	gc.AddGrade("assign", 90, Assignment)
+	gc.AddGrade("exam", 90, Exam)
+	gc.AddGrade("essay", 90, Essay)
+	if got := gc.GetPassFail(); got != "Pass" {
+		t.Fatalf("GetPassFail()=%s; want Pass (A)", got)
+	}
+}
+
+// add function to test pass/fail below C
+func TestPassFail_FailBelowC(t *testing.T) {
+	// D (60) -> Fail
+	gc := NewGradeCalculator()
+	gc.AddGrade("assign", 60, Assignment)
+	gc.AddGrade("exam", 60, Exam)
+	gc.AddGrade("essay", 60, Essay)
+	if got := gc.GetPassFail(); got != "Fail" {
+		t.Fatalf("GetPassFail()=%s; want Fail (D)", got)
+	}
+
+	// F (<60) -> Fail
+	gc = NewGradeCalculator()
+	gc.AddGrade("assign", 10, Assignment)
+	gc.AddGrade("exam", 20, Exam)
+	gc.AddGrade("essay", 30, Essay)
+	if got := gc.GetPassFail(); got != "Fail" {
+		t.Fatalf("GetPassFail()=%s; want Fail (F)", got)
+	}
+}
