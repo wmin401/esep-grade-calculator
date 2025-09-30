@@ -1,9 +1,8 @@
 package esepunittests
 
 type GradeCalculator struct {
-	assignments []Grade
-	exams       []Grade
-	essays      []Grade
+	// updated it to a single list
+	gradeList []Grade
 }
 
 type GradeType int
@@ -32,60 +31,71 @@ type Grade struct {
 
 func NewGradeCalculator() *GradeCalculator {
 	return &GradeCalculator{
-		assignments: make([]Grade, 0),
-		exams:       make([]Grade, 0),
-		essays:      make([]Grade, 0),
+		// updated variable name
+		gradeList: make([]Grade, 0),
 	}
 }
 
 func (gc *GradeCalculator) GetFinalGrade() string {
-	numericalGrade := gc.calculateNumericalGrade()
 
-	if numericalGrade >= 90 {
+	numerical := gc.calculateNumericalGrade()
+	//updated it to using switch
+	switch {
+	case numerical >= 90:
 		return "A"
-	} else if numericalGrade >= 80 {
+	case numerical >= 80:
 		return "B"
-	} else if numericalGrade >= 70 {
+	case numerical >= 70:
 		return "C"
-	} else if numericalGrade >= 60 {
+	case numerical >= 60:
 		return "D"
+	default:
+		return "F"
 	}
-
-	return "F"
 }
 
 func (gc *GradeCalculator) AddGrade(name string, grade int, gradeType GradeType) {
-	switch gradeType {
-	case Assignment:
-		gc.assignments = append(gc.assignments, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Assignment,
-		})
-	case Exam:
-		gc.exams = append(gc.exams, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Exam,
-		})
-	case Essay:
-		gc.essays = append(gc.essays, Grade{
-			Name:  name,
-			Grade: grade,
-			Type:  Essay,
-		})
-	}
+	// updated variable name
+	gc.gradeList = append(gc.gradeList, Grade{
+		Name:  name,
+		Grade: grade,
+		Type:  gradeType,
+	})
 }
 
 func (gc *GradeCalculator) calculateNumericalGrade() int {
-	assignment_average := computeAverage(gc.assignments)
-	exam_average := computeAverage(gc.exams)
-	//bugfix 1
-	essay_average := computeAverage(gc.essays)
+	var sumA, cntA, sumE, cntE, sumS, cntS int
+	// updated variable name
+	for _, g := range gc.gradeList {
+		switch g.Type {
+		case Assignment:
+			sumA += g.Grade
+			cntA++
+		case Exam:
+			sumE += g.Grade
+			cntE++
+		case Essay:
+			sumS += g.Grade
+			cntS++
+		}
+	}
+	assignmentAvg := avgInt(sumA, cntA)
+	examAvg := avgInt(sumE, cntE)
+	essayAvg := avgInt(sumS, cntS)
 
-	weighted_grade := float64(assignment_average)*.5 + float64(exam_average)*.35 + float64(essay_average)*.15
+	weighted := float64(assignmentAvg)*0.50 +
+		float64(examAvg)*0.35 +
+		float64(essayAvg)*0.15
 
-	return int(weighted_grade)
+	return int(weighted)
+}
+
+// add function avgInt
+func avgInt(sum, cnt int) int {
+	if cnt == 0 {
+		return 0
+	}
+	return sum / cnt
 }
 
 func computeAverage(grades []Grade) int {

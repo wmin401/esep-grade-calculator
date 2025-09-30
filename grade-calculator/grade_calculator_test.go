@@ -109,3 +109,27 @@ func TestGetGradeC(t *testing.T) {
 		t.Fatalf("GetFinalGrade()=%s; want C", got)
 	}
 }
+
+// add function to test only assignments
+func TestGetGradeOnlyAssignments(t *testing.T) {
+	gc := NewGradeCalculator()
+
+	// Only assignments -> exams, essays count=0
+	gc.AddGrade("assign1", 100, Assignment)
+
+	// Weighted: 100 * 0.5 = 50 -> "F"
+	if got := gc.GetFinalGrade(); got != "F" {
+		t.Fatalf("GetFinalGrade()=%s; want F", got)
+	}
+}
+
+// add function to test average-non-empty
+func TestComputeAverageNonEmpty(t *testing.T) {
+	in := []Grade{
+		{Name: "a", Grade: 80, Type: Assignment},
+		{Name: "b", Grade: 100, Type: Assignment},
+	}
+	if got := computeAverage(in); got != 90 {
+		t.Fatalf("computeAverage(non-empty)=%d; want 90", got)
+	}
+}
